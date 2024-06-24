@@ -18,7 +18,9 @@ Antes de executar o script, atualize a linha `server_name seu_domain;` para o se
 Depois de fazer as edições necessárias, dê permissão de execução e execute o script:
 
 
-```chmod +x setup_n8n.sh```
+```
+chmod +x setup_n8n.sh
+```
 
 ```./setup_n8n.sh```
 
