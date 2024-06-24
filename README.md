@@ -26,8 +26,7 @@ chmod +x setup_n8n.sh
 #!/bin/bash
 
 # 1. Atualizar o Sistema
-sudo apt update && sudo apt upgrade -y
-
+```sudo apt update && sudo apt upgrade -y```
 # 2. Instalar Docker e Docker Compose
 
 ```
@@ -43,12 +42,13 @@ docker-compose --version
 ```
 
 # 3. Configurar Nginx
-sudo apt install nginx -y
+```sudo apt install nginx -y```
 
 # 4. Configurar Certbot e Let's Encrypt
-sudo apt install certbot python3-certbot-nginx -y
+```sudo apt install certbot python3-certbot-nginx -y```
 
 # 5. Configurar Nginx para n8n
+```
 sudo bash -c 'cat > /etc/nginx/sites-available/n8n <<EOF
 server {
     listen 80;
@@ -64,19 +64,20 @@ server {
     }
 }
 EOF'
-
+```
 # 6. Remover o Link para o Arquivo Padrão que Não Existe
+```
 sudo rm /etc/nginx/sites-enabled/default
 sudo ln -s /etc/nginx/sites-available/n8n /etc/nginx/sites-enabled/
 sudo nginx -t
 sudo systemctl restart nginx
-
+```
 # 7. Obter Certificado SSL com Certbot
-sudo certbot --nginx -d seu_domain
+```sudo certbot --nginx -d seu_domain```
 
 # 8. Configurar Docker para n8n
-mkdir ~/n8n && cd ~/n8n
-cat > docker-compose.yml <<EOF
+```mkdir ~/n8n && cd ~/n8n```
+```cat > docker-compose.yml <<EOF
 services:
   n8n:
     image: n8nio/n8n
@@ -93,38 +94,36 @@ services:
     volumes:
       - ~/.n8n:/home/node/.n8n
 EOF
-
+```
 # 9. Iniciar o n8n com Docker
-docker-compose up -d
+```docker-compose up -d```
 
 # 10. Verificar Configuração
 echo "Acesse https://seu_domain no seu navegador para verificar se o n8n está funcionando corretamente com SSL."
 
 # 11. Automatizar Renovação do Certificado SSL
-sudo systemctl status certbot.timer
+```sudo systemctl status certbot.timer```
 
 # Verificar containers Docker
-docker-compose ps
+```docker-compose ps```
 
 # Passos Finais
 Edite o Script: Abra o script setup_n8n.sh em um editor de texto e substitua seu_domain pelo seu domínio real. Além disso, substitua <seu_usuario> e <sua_senha> com suas credenciais desejadas.
 
 Dar Permissão de Execução ao Script: No terminal, navegue até o diretório onde o script está salvo e execute o comando abaixo para tornar o script executável:
 
-
-chmod +x setup_n8n.sh
-
+```chmod +x setup_n8n.sh```
 
 Executar o Script: Execute o script para iniciar a configuração:
 
-./setup_n8n.sh
+```./setup_n8n.sh```
 
 # Verificar a Configuração: Após a execução do script, acesse https://seu_domain no seu navegador para verificar se o n8n está funcionando corretamente com SSL.
 
 Automatizar Renovação do Certificado SSL: Certifique-se de que a renovação automática do Certbot está configurada executando o comando:
 
-sudo systemctl status certbot.timer
+```sudo systemctl status certbot.timer```
 
 # Verificar Containers Docker: Verifique os containers Docker em execução com o comando:
 
-docker-compose ps
+```docker-compose ps```
