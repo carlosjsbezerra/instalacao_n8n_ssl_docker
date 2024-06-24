@@ -1,0 +1,107 @@
+# 1. Atualizar o Sistema
+# Primeiro, atualize o sistema operacional
+sudo apt update && sudo apt upgrade -y
+
+# 2. Instalar Docker e Docker Compose
+# Instale o Docker e o Docker Compose:
+sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
+
+# Adicionar chave GPG oficial do Docker
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+
+# Adicionar repositório Docker
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+
+# Instalar Docker
+sudo apt update
+sudo apt install docker-ce -y
+
+# Verificar instalação do Docker
+sudo systemctl status docker
+
+# Instalar Docker Compose
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+# Verificar instalação do Docker Compose
+docker-compose --version
+
+#3. Configurar Nginx
+# Instale o Nginx
+sudo apt install nginx -y
+
+# 4. Configurar Certbot e Let's Encrypt
+# Instale Certbot para Nginx
+sudo apt install certbot python3-certbot-nginx -y
+
+# 5 Configurar Nginx para n8n
+# Crie um arquivo de configuração para o Nginx
+sudo nano /etc/nginx/sites-available/n8n
+
+# Adicione a configuração abaixo, substituindo seu_domain pelo seu domínio real
+
+    server {
+        listen 80;
+        server_name seu_domain;
+
+        location / {
+            proxy_pass http://localhost:5678;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+        }
+    }
+
+# 6. Remover o Link para o Arquivo Padrão que Não Existe
+# Primeiro, remova o link simbólico para o arquivo de configuração padrão que não existe mais
+sudo rm /etc/nginx/sites-enabled/default
+
+# Ative a configuração do Nginx 
+sudo ln -s /etc/nginx/sites-available/n8n /etc/nginx/sites-enabled/
+sudo nginx -t
+sudo systemctl restart nginx
+
+# 7. Obter Certificado SSL com Certbot
+# Obtenha e instale o certificado SSL
+sudo certbot --nginx -d seu_domain
+
+# 8. Configurar Docker para n8n
+# Crie um diretório para o n8n e entre nele
+mkdir ~/n8n && cd ~/n8n
+
+# Crie um arquivo docker-compose.yml
+nano docker-compose.yml
+
+# Adicione o seguinte conteúdo ao arquivo
+    
+    services:
+      n8n:
+        image: n8nio/n8n
+        restart: always
+        ports:
+          - "127.0.0.1:5678:5678"
+        environment:
+          - N8N_BASIC_AUTH_ACTIVE=true
+          - N8N_BASIC_AUTH_USER=<seu_usuario> 
+          - N8N_BASIC_AUTH_PASSWORD=<sua_senha>
+          - N8N_HOST=seu_domain
+          - N8N_PORT=5678
+          - N8N_PROTOCOL=https
+        volumes:
+          - ~/.n8n:/home/node/.n8n
+
+# 9. Iniciar o n8n com Docker
+# Inicie o n8n usando Docker Compose
+docker-compose up -d
+
+# 10. Verificar Configuração
+# Acesse https://seu_domain no seu navegador para verificar se o n8n está funcionando corretamente com SSL.
+
+# 11. Automatizar Renovação do Certificado SSL
+# Certifique-se de que a renovação automática do Certbot está configurada
+sudo systemctl status certbot.timer
+
+# docker
+docker-compose ps
