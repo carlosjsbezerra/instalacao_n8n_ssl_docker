@@ -19,6 +19,7 @@ Depois de fazer as edições necessárias, dê permissão de execução e execut
 
 
 ```chmod +x setup_n8n.sh```
+
 ```./setup_n8n.sh```
 
 ### Script setup_n8n.sh
