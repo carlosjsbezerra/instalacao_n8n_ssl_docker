@@ -1,4 +1,4 @@
-# Tutorial de Configuração do Ambiente com Docker, Nginx e n8n
+# Tutorial de Configuração do Ambiente com Docker, Nginx, ssl e n8n
 
 Este tutorial descreve os passos necessários para configurar um ambiente com Docker, Nginx, Certbot (Let's Encrypt) e n8n. Um script shell está incluído para automatizar a maior parte do processo.
 
