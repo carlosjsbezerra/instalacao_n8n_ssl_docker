@@ -1,4 +1,4 @@
-# Tutorial de Configuração do Ambiente com Docker, Nginx, ssl e n8n
+# Tutorial de Configuração do Ambiente com Docker, Nginx e n8n
 
 Este tutorial descreve os passos necessários para configurar um ambiente com Docker, Nginx, Certbot (Let's Encrypt) e n8n. Um script shell está incluído para automatizar a maior parte do processo.
 
@@ -10,7 +10,6 @@ Você pode automatizar todos os passos anteriores usando o script shell abaixo. 
 
 Antes de executar o script, atualize a linha `server_name seu_domain;` para o seu domínio real, e as linhas:
 
-```yaml
 - N8N_BASIC_AUTH_USER=<seu_usuario>
 - N8N_BASIC_AUTH_PASSWORD=<sua_senha>
 - N8N_HOST=seu_domain
@@ -18,19 +17,19 @@ Antes de executar o script, atualize a linha `server_name seu_domain;` para o se
 ### Executar o Script
 Depois de fazer as edições necessárias, dê permissão de execução e execute o script:
 
-```sh
+
 chmod +x setup_n8n.sh
 ./setup_n8n.sh
 
 ### Script setup_n8n.sh
 
-```sh
 #!/bin/bash
 
 # 1. Atualizar o Sistema
 sudo apt update && sudo apt upgrade -y
 
 # 2. Instalar Docker e Docker Compose
+
 sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
@@ -110,23 +109,20 @@ Edite o Script: Abra o script setup_n8n.sh em um editor de texto e substitua seu
 
 Dar Permissão de Execução ao Script: No terminal, navegue até o diretório onde o script está salvo e execute o comando abaixo para tornar o script executável:
 
-```sh
+
 chmod +x setup_n8n.sh
 
 
 Executar o Script: Execute o script para iniciar a configuração:
 
-```sh
 ./setup_n8n.sh
 
 # Verificar a Configuração: Após a execução do script, acesse https://seu_domain no seu navegador para verificar se o n8n está funcionando corretamente com SSL.
 
 Automatizar Renovação do Certificado SSL: Certifique-se de que a renovação automática do Certbot está configurada executando o comando:
 
-```sh
 sudo systemctl status certbot.timer
 
 # Verificar Containers Docker: Verifique os containers Docker em execução com o comando:
 
-```sh
 docker-compose ps
